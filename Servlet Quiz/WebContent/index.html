@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>Quiz</title>
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<style>
+#container
+{
+	display:none;
+}
+#Answer
+{
+	color:green;
+}
+#scoreContainer
+{
+	visibility:hidden;
+}
+.options
+{
+	border:0px white;
+	box-shadow:0 0 5px black;
+	border-radius:5px;
+	padding:5px;
+	margin:10px;
+	max-width:200px;
+	padding:10px;
+	
+}
+</style>
+</head>
+
+<body>
+<center>
+	<h1>Geography Quiz</h1>
+	<button onclick="start()">Start Quiz</button>
+</center>
+
+<div id="container" >
+	 <h1 id="Question"></h1>
+	 <div class="options">
+	 	<input type="radio" id="A" name="option" onclick="check()"/>
+	 	<label for="A"></label>
+	 </div>
+     
+     <div class="options">
+     	<input type="radio" id="B" name="option" onclick="check()"/>
+     <label for="B"></label>
+     	</div>
+     
+     <div class="options">
+     	<input type="radio" id="C" name="option" onclick="check()"/>
+     	<label for="C"></label>
+     </div>
+     
+     <div class="options">
+     	<input type="radio" id="D" name="option" onclick="check()"/>
+     	<label for="D"></label>
+     </div>
+     
+     <p id="Answer"></p>
+     <button onclick="next()">Next Question</button>
+</div>
+
+<div id="scoreContainer">
+	<h1>Quiz Finished</h1>
+	<p id="score"></p>
+</div>
+
+</body>
+<script>
+let count= -1;
+let score = 0;
+let dataFromDB = [];
+let start = () => {
+count = -1;
+score=0;
+document.getElementById("container").style.display = "block";
+document.getElementById("scoreContainer").style.visibility = "hidden";
+const link = "http://localhost:8080/Quiz/getData"
+getJSON(link)
+.then(data => {
+	let dataArray = JSON.parse(data);
+	for(let i=0;i<10;i++)
+	{
+		
+		let d = dataArray[Math.floor(Math.random() * dataArray.length)];
+		dataFromDB.push(d);
+	}
+	count++;
+	document.getElementById("Question").innerHTML = dataFromDB[count].Question;
+	let radio = document.getElementsByTagName("label")
+	radio[0].innerHTML = dataFromDB[count].A;
+	radio[1].innerHTML = dataFromDB[count].B;
+	radio[2].innerHTML = dataFromDB[count].C;
+	radio[3].innerHTML = dataFromDB[count].D;
+});
+};
+
+let getJSON = link => {
+return new Promise((resolve,reject) => {
+ let xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	  resolve(this.responseText);
+    }
+  };
+  xhttp.open("GET", link, true);
+  xhttp.send(); 
+  });
+};
+
+let next = () => {
+	clearSelection();
+	if(count < dataFromDB.length-1)
+		count++;
+	else
+	{
+		displayScore(score);	
+	}
+	document.getElementById("Question").innerHTML = dataFromDB[count].Question;
+	let radio = document.getElementsByTagName("label")
+	radio[0].innerHTML = dataFromDB[count].A;
+	radio[1].innerHTML = dataFromDB[count].B;
+	radio[2].innerHTML = dataFromDB[count].C;
+	radio[3].innerHTML = dataFromDB[count].D;
+};
+
+let check = () =>{
+	
+	
+	let l = document.getElementsByTagName("label");
+	let div = document.getElementsByClassName("options");
+	let radio = document.getElementsByTagName("input");
+	for(let i=0;i<radio.length;i++)
+	{
+		document.getElementById("Answer").innerHTML = "Answer is 	"+dataFromDB[count].Answer;
+		if(radio[i].checked)
+		{
+			if(dataFromDB[count].Answer == l[i].innerHTML)
+			{
+				div[i].style.backgroundColor ="#90ee90";
+				score++;
+			}
+			else
+				div[i].style.backgroundColor ="#ffcccb";
+				
+		}
+		if(dataFromDB[count].Answer == l[i].innerHTML)
+			div[i].style.backgroundColor ="#90ee90";
+		
+	}
+};
+
+let clearSelection = () =>{
+	document.getElementById("Answer").innerHTML = "";
+	let l = document.getElementsByTagName("label");
+	let div = document.getElementsByClassName("options")
+	let r = document.getElementsByTagName("input");
+	for(let i=0;i<r.length;i++)
+	{
+		r[i].checked = false;
+		div[i].style.backgroundColor ="transparent";
+	}
+	
+};
+
+let displayScore = score => {
+	
+	document.getElementById("container").style.display = "none";
+	document.getElementById("scoreContainer").style.visibility = "visible";	
+	document.getElementById("score").innerHTML = `Your Score is ${score}/10`
+	
+};
+
+
+
+</script>
+</html>
