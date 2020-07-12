@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+<h:head>
+	<title>JSF | Welcome</title>
+
+	<style>
+p{
+	color: green;
+	display:none;
+}
+
+#scoreContainer {
+	visibility: hidden;
+}
+
+.options {
+	border: 0px white;
+	box-shadow: 0 0 5px black;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 10px;
+	max-width: 200px;
+	padding: 10px;
+	color: red;
+}
+</style>
+
+</h:head>
+
+<h:body>
+	<h:form>
+		<h1 id="Question">#{quizbean.questions[quizbean.count].Question}</h1>
+		<h:selectOneRadio layout="pageDirection	" value="#{quizbean.selected}"
+			onclick="show();">
+			<f:selectItem itemValue="#{quizbean.questions[quizbean.count].A}"
+				itemLabel="#{quizbean.questions[quizbean.count].A}" />
+			<f:selectItem itemValue="#{quizbean.questions[quizbean.count].B}"
+				itemLabel="#{quizbean.questions[quizbean.count].B}" />
+			<f:selectItem itemValue="#{quizbean.questions[quizbean.count].C}"
+				itemLabel="#{quizbean.questions[quizbean.count].C}" />
+			<f:selectItem itemValue="#{quizbean.questions[quizbean.count].D}"
+				itemLabel="#{quizbean.questions[quizbean.count].D}" />
+		</h:selectOneRadio>
+		<p id="Answer">#{quizbean.questions[quizbean.count].Answer}</p>
+		<h:commandButton value="Next Question" action="#{quizbean.increment}"
+			type="submit"></h:commandButton>
+	</h:form>
+	<div id="scoreContainer">
+		<h1>Quiz Finished</h1>
+		<p id="score"></p>
+	</div>
+</h:body>
+
+<script language="javascript">
+	function show() {
+		document.getElementById("Answer").style.display = "block";
+	}
+</script>
+
+</html>
